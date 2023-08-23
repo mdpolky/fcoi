@@ -23,7 +23,8 @@ const persistConfig = {
   key: "root",
 };
 
-export const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -33,8 +34,8 @@ export const store = configureStore({
       },
     }),
 });
-export const persistor = persistStore(store);
 
+export const persistor = persistStore(store);
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
