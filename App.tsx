@@ -5,7 +5,9 @@ import { store } from "./app/redux/store";
 import { useAppDispatch, useAppSelector } from "./app/redux/hooks";
 import { Provider } from "react-redux";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
 import { setYahooUser } from "./app/redux/userSlice";
+import { setYahooLeagues } from "./app/redux/leaguesSlice";
 import { getLeagues } from "./app/yahooApi";
 
 async function handleFirestoreOnPress() {
@@ -15,16 +17,6 @@ async function handleFirestoreOnPress() {
   };
   try {
     const docRef = await addUser(payload);
-    console.log("Document written with ID: ", docRef?.id);
-  } catch (err) {
-    console.error(err);
-    //handle error case
-  }
-}
-
-async function handleYahooLeaguesOnPress(accessToken: String) {
-  try {
-    const result = await getLeagues(accessToken);
   } catch (err) {
     console.error(err);
     //handle error case
@@ -57,7 +49,17 @@ function YahooSignIn() {
 }
 
 function YahooLeagues() {
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
+  const handleYahooLeaguesOnPress = async (accessToken: String) => {
+    try {
+      const result = await getLeagues(accessToken);
+      dispatch(setYahooLeagues(result.leagues));
+    } catch (err) {
+      console.error(err);
+      //handle error case
+    }
+  };
   return (
     <Pressable
       style={styles.button}
@@ -70,6 +72,21 @@ function YahooLeagues() {
   );
 }
 
+function UserLeagues() {
+  const leagues = useAppSelector((state) => state.leagues);
+  return (
+    <View>
+      {leagues.map((league, i) => {
+        return (
+          <View key={league.league_key as React.Key}>
+            <Text>{league.name}</Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
 function AppRoot() {
   return (
     <View style={styles.container}>
@@ -78,6 +95,7 @@ function AppRoot() {
       </Pressable>
       <YahooSignIn />
       <YahooLeagues />
+      <UserLeagues />
       <StatusBar style="auto" />
     </View>
   );

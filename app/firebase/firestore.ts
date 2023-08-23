@@ -18,7 +18,6 @@ export async function getUsers() {
   try {
     const usersSnapshot = await getDocs(userCollectionRef);
     const usersList = usersSnapshot.docs.map((doc) => doc.data());
-    console.log(usersList);
   } catch (err) {
     console.error("Error calling getUsers: ", err);
   }
