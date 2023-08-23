@@ -1,9 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { addUser } from "./app/firebase/firestore";
 import { authWithYahoo } from "./app/firebase/authentication";
-import { store } from "./app/redux/store";
+import { persistor, store } from "./app/redux/store";
 import { useAppDispatch, useAppSelector } from "./app/redux/hooks";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { setYahooUser } from "./app/redux/userSlice";
@@ -104,7 +105,9 @@ function AppRoot() {
 export default function App() {
   return (
     <Provider store={store}>
-      <AppRoot />
+      <PersistGate loading={null} persistor={persistor}>
+        <AppRoot />
+      </PersistGate>
     </Provider>
   );
 }
