@@ -4,6 +4,8 @@ import { authWithYahoo } from "@/firebase/authentication";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setYahooLeagues } from "@/redux/leaguesSlice";
 import { setYahooUser } from "@/redux/userSlice";
+import { useAssets } from "expo-asset";
+import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
@@ -102,8 +104,11 @@ function UserLeagues() {
 }
 
 export default function App() {
+  const [assets, error] = useAssets([require("../assets/fcoi-logo.png")]);
+  const logoUri = assets && assets[0].uri;
   return (
     <View style={styles.container}>
+      <Image style={styles.logo} source={{ uri: logoUri }} />
       <Pressable style={styles.button} onPress={handleFirestoreOnPress}>
         <Text>Add To Firestore</Text>
       </Pressable>
@@ -118,11 +123,17 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     gap: 20,
+    alignItems: "center",
   },
   button: {
+    width: 150,
     backgroundColor: "#bada55",
     padding: 10,
+    borderBottomRightRadius: 5,
+    borderTopLeftRadius: 5,
+    alignItems: "center",
   },
+  logo: { width: 150, height: 150 },
   link: {
     color: "blue",
     textDecorationLine: "underline",

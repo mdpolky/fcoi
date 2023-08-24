@@ -18,9 +18,21 @@ export async function getLeagues(accessToken: String) {
   }
 }
 
-export async function getLeagueByKey(league_key: String) {
+export async function getLeagueStandings(
+  accessToken: String,
+  league_key: String
+) {
   try {
-    const response = await fetch(base_url + "/league/" + league_key);
+    const reqOptions = {
+      method: "Get",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    };
+    const response = await fetch(
+      `${base_url}/league/${league_key}/standings`,
+      reqOptions
+    );
     const json = await response.json();
     return json;
   } catch (err) {
