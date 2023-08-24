@@ -1,15 +1,18 @@
+import { getLeagues } from "@/yahooApi";
+import { addUser } from "@/firebase/firestore";
+import { authWithYahoo } from "@/firebase/authentication";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setYahooLeagues } from "@/redux/leaguesSlice";
+import { setYahooUser } from "@/redux/userSlice";
+import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { addUser } from "./app/firebase/firestore";
-import { authWithYahoo } from "./app/firebase/authentication";
-import { persistor, store } from "./app/redux/store";
-import { useAppDispatch, useAppSelector } from "./app/redux/hooks";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { setYahooUser } from "./app/redux/userSlice";
-import { setYahooLeagues } from "./app/redux/leaguesSlice";
-import { getLeagues } from "./app/yahooApi";
+import { LogBox, Pressable, StyleSheet, Text, View } from "react-native";
+
+//https://github.com/necolas/react-native-web/commit/1c5119b7e1638a22210291ef9ede5d9ab599ec55
+LogBox.ignoreLogs([
+  "BackHandler is not supported on web and should not be used.",
+]);
 
 async function handleFirestoreOnPress() {
   const payload = {
@@ -76,12 +79,20 @@ function YahooLeagues() {
 function UserLeagues() {
   const leagues = useAppSelector((state) => state.leagues);
   return (
-    <View>
+    <View style={styles.container}>
       {leagues.map((league, i) => {
         return (
           <View key={league.league_key as React.Key}>
             <Text>
-              {league.name} {String(league.season)}
+              <Link
+                style={styles.link}
+                href={{
+                  pathname: "/league/[league_key]",
+                  params: { league_key: league.league_key },
+                }}
+              >
+                {league.name} ({String(league.season)})
+              </Link>
             </Text>
           </View>
         );
@@ -90,7 +101,7 @@ function UserLeagues() {
   );
 }
 
-function AppRoot() {
+export default function App() {
   return (
     <View style={styles.container}>
       <Pressable style={styles.button} onPress={handleFirestoreOnPress}>
@@ -104,26 +115,16 @@ function AppRoot() {
   );
 }
 
-export default function App() {
-  return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <AppRoot />
-      </PersistGate>
-    </Provider>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
     gap: 20,
   },
   button: {
     backgroundColor: "#bada55",
     padding: 10,
+  },
+  link: {
+    color: "blue",
+    textDecorationLine: "underline",
   },
 });
