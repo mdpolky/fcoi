@@ -5,7 +5,8 @@ import { StyleSheet, Text, View } from "react-native";
 export default function League() {
   const { league_key } = useLocalSearchParams();
   const leagues = useAppSelector((state) => state.leagues);
-  const currentLeague = leagues.find((league) => league_key === league_key);
+  const currentLeague = leagues.find((l) => l.league_key === league_key);
+  console.log(league_key);
   return (
     <View style={styles.container}>
       <Text>
