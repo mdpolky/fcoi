@@ -80,7 +80,9 @@ function UserLeagues() {
       {leagues.map((league, i) => {
         return (
           <View key={league.league_key as React.Key}>
-            <Text>{league.name}</Text>
+            <Text>
+              {league.name} {String(league.season)}
+            </Text>
           </View>
         );
       })}
